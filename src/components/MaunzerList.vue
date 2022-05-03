@@ -233,8 +233,16 @@
 
                 methods: {
 
+                        getState() {
+                            return {
+                                heading: this.headingText,
+                                entries: this.myArray,
+                            }
+                        },
+
                         changeHappened: function() {
                             console.log("change happened")
+                            //not rly needed if we fetch data from parent :)
                         },
 
                         finishEditingHeading: function() {
@@ -255,7 +263,7 @@
 
                         deleteItem: function(element) {
                             this.myArray = this.myArray.filter(n => n !== element)
-                            changeHappened()
+                            this.changeHappened()
                         },            
                         
                         finishedEditing: function(element) {

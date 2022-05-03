@@ -69,13 +69,7 @@
 -->
 
         <q-page-container>
-
-                <maunzer-list heading-text="Career / Education"></maunzer-list>
-                <maunzer-list heading-text="Awards"></maunzer-list>
-                <maunzer-list heading-text="Skills"></maunzer-list>
-                <maunzer-list heading-text="Languages"></maunzer-list>
-                        
-
+            <cv-view></cv-view>
         </q-page-container>
 
         <q-drawer
@@ -109,7 +103,10 @@
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
 
-import MaunzerList from 'components/MaunzerList.vue';
+import CvView from 'components/CvView.vue'
+
+
+
 
 const linksList = [
     {
@@ -124,36 +121,7 @@ const linksList = [
         icon: 'code',
         link: 'https://github.com/quasarframework'
     },
-    {
-        title: 'Discord Chat Channel',
-        caption: 'chat.quasar.dev',
-        icon: 'chat',
-        link: 'https://chat.quasar.dev'
-    },
-    {
-        title: 'Forum',
-        caption: 'forum.quasar.dev',
-        icon: 'record_voice_over',
-        link: 'https://forum.quasar.dev'
-    },
-    {
-        title: 'Twitter',
-        caption: '@quasarframework',
-        icon: 'rss_feed',
-        link: 'https://twitter.quasar.dev'
-    },
-    {
-        title: 'Facebook',
-        caption: '@QuasarFramework',
-        icon: 'public',
-        link: 'https://facebook.quasar.dev'
-    },
-    {
-        title: 'Quasar Awesome',
-        caption: 'Community Quasar projects',
-        icon: 'favorite',
-        link: 'https://awesome.quasar.dev'
-    }
+
 ]
 
 export default defineComponent({
@@ -161,13 +129,11 @@ export default defineComponent({
 
     components: {
         EssentialLink,
-        MaunzerList,
+        CvView,
     },
 
     methods: {
-        nigga: function() {
 
-        }
     },
 
     setup () {
