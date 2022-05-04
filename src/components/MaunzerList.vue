@@ -218,131 +218,131 @@
 <script>
 
 
-        import { defineComponent, ref } from 'vue'
-        import draggable from 'vuedraggable'
+import { defineComponent, ref } from 'vue'
+import draggable from 'vuedraggable'
 
-        export default defineComponent({
-                name: 'MaunzerList',
+export default defineComponent({
+    name: 'MaunzerList',
+
+    props: {
+        section: Object,
+    },
+
+    emits: ["change"],
 
 
-                props: {
-                    headingText: String,
+    components: {
+        draggable,
+    },
+
+    methods: {
+
+        getState() {
+            return {
+                heading: this.headingText,
+                entries: this.myArray,
+            }
+        },
+
+        changeHappened: function() {
+            this.$emit('change')
+        },
+
+        finishEditingHeading: function() {
+            this.headingIsBeingEdited = false
+            this.changeHappened()
+        },
+
+        editHeading: function() {
+            this.myArray.forEach(n => n.isBeingEdited = false)
+            this.headingIsBeingEdited = true
+        },
+
+        editItem: function(element) {
+            //console.log(this.myArray, element)
+            this.myArray.forEach(n => n.isBeingEdited = false)
+            element.isBeingEdited = true
+        },
+
+        deleteItem: function(element) {
+            this.myArray = this.myArray.filter(n => n !== element)
+            this.changeHappened()
+        },            
+        
+        finishedEditing: function(element) {
+            element.isBeingEdited = false
+            console.log(element, element.model)
+            this.changeHappened()
+        },
+
+        addItem: function() {
+            let years = []
+
+            let months = [
+                {text: "January", value: "1"},
+                {text: "February", value: "2"},
+                {text: "March", value: "3"},
+                {text: "April", value: "4"},
+                {text: "May", value: "5"},
+                {text: "June", value: "6"},
+                {text: "July", value: "7"},
+                {text: "August", value: "8"},
+                {text: "September", value: "9"},
+                {text: "October", value: "10"},
+                {text: "November", value: "11"},
+                {text: "December", value: "12"},
+
+
+            ]
+            for (let i = 2030; i > 1948; i--) {
+                    years.push(i + "")
+            }
+            let drOpts = [
+                {
+                    text: "single date",
+                    value: "date",
                 },
 
-                emits: ["change"],
-
-
-                components: {
-                        draggable,
-                },
-
-                methods: {
-
-                        getState() {
-                            return {
-                                heading: this.headingText,
-                                entries: this.myArray,
-                            }
-                        },
-
-                        changeHappened: function() {
-                            this.$emit('change')
-                        },
-
-                        finishEditingHeading: function() {
-                            this.headingIsBeingEdited = false
-                            this.changeHappened()
-                        },
-
-                        editHeading: function() {
-                            this.myArray.forEach(n => n.isBeingEdited = false)
-                            this.headingIsBeingEdited = true
-                        },
-
-                        editItem: function(element) {
-                            //console.log(this.myArray, element)
-                            this.myArray.forEach(n => n.isBeingEdited = false)
-                            element.isBeingEdited = true
-                        },
-
-                        deleteItem: function(element) {
-                            this.myArray = this.myArray.filter(n => n !== element)
-                            this.changeHappened()
-                        },            
-                        
-                        finishedEditing: function(element) {
-                            element.isBeingEdited = false
-                            console.log(element, element.model)
-                            this.changeHappened()
-                        },
-
-                        addItem: function() {
-                            let years = []
-
-                            let months = [
-                                {text: "January", value: "1"},
-                                {text: "February", value: "2"},
-                                {text: "March", value: "3"},
-                                {text: "April", value: "4"},
-                                {text: "May", value: "5"},
-                                {text: "June", value: "6"},
-                                {text: "July", value: "7"},
-                                {text: "August", value: "8"},
-                                {text: "September", value: "9"},
-                                {text: "October", value: "10"},
-                                {text: "November", value: "11"},
-                                {text: "December", value: "12"},
-
-
-                            ]
-                            for (let i = 2030; i > 1948; i--) {
-                                    years.push(i + "")
-                            }
-                            let drOpts = [
-                                {
-                                    text: "single date",
-                                    value: "date",
-                                },
-
-                                {
-                                    text: "from ... to ...",
-                                    value: "range",
-                                }
-                            ]
-                            let id = crypto.randomUUID()
-                            this.myArray.push({
-                                    name: "new entry " + id,
-                                    id: id,
-                                    model: {text: "January", value: "1"},
-                                    options: months,                 
-                                    model2: "2015",
-                                    options2: years,
-                                    model3: {text: "March", value: "3"},
-                                    options3: months,                 
-                                    model4: "2022",
-                                    options4: years,
-                                    dateOrRangeOptions: drOpts,
-                                    dateOrRange: drOpts[1],
-                                    jobDescription: "Customer Care at Dogs Inc.",
-                            
-                            })
-                            this.changeHappened()
-                        },
-
-                },
-
-                data() {
-                        return {
-                                drag: false,
-                                heading: this.headingText,
-                                myArray: [],
-                                headingIsBeingEdited: false,
-                        }
-                },
-
-                setup () {
+                {
+                    text: "from ... to ...",
+                    value: "range",
                 }
-        })
+            ]
+            let id = crypto.randomUUID()
+            this.myArray.push({
+                    name: "new entry " + id,
+                    id: id,
+                    model: {text: "January", value: "1"},
+                    options: months,                 
+                    model2: "2015",
+                    options2: years,
+                    model3: {text: "March", value: "3"},
+                    options3: months,                 
+                    model4: "2022",
+                    options4: years,
+                    dateOrRangeOptions: drOpts,
+                    dateOrRange: drOpts[1],
+                    jobDescription: "Customer Care at Dogs Inc.",
+            
+            })
+            this.changeHappened()
+        },
+
+    }, //methods
+
+    data() {
+        return {
+                drag: false,
+                heading: this.headingText,
+                myArray: [],
+                headingIsBeingEdited: false,
+        }
+    },
+
+    setup () {
+    }
+
+}) //export
 
 </script>
 

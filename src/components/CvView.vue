@@ -1,47 +1,58 @@
 <template>
 
 <!--
-    <maunzer-list ref="maunzer" heading-text=""></maunzer-list>
-    <maunzer-list ref="maunzer" heading-text=""></maunzer-list>
-    <maunzer-list ref="maunzer" heading-text=""></maunzer-list>
-    <maunzer-list ref="maunzer" heading-text=""></maunzer-list>
-    -->
+<maunzer-list ref="maunzer" heading-text=""></maunzer-list>
+<maunzer-list ref="maunzer" heading-text=""></maunzer-list>
+<maunzer-list ref="maunzer" heading-text=""></maunzer-list>
+<maunzer-list ref="maunzer" heading-text=""></maunzer-list>
+-->
 
-    <div class="row items-stretch">
-        <div class="col-6 q-pa-md">
-            <p>Create</p>
-            <div>
-                <q-input outlined autogrow v-model="headerLeftText"
-                @change="this.headerTextChanged"
-                class="q-mb-md" label="Left-hand header text (multiple lines allowed)" />
 
-                <q-input outlined autogrow v-model="headerRightText"
-                @change="this.headerTextChanged"
-                class="q-mb-md" label="Right-hand header text (multiple lines allowed)" />
 
-                <maunzer-list
-                    ref="sections"
-                    :key="section.id" v-for="section in sections" :heading-text="section.title"
-                    @change="subListChanged(section)"
-                    >
-                </maunzer-list>
-            </div>
+
+
+<div class="row items-stretch">
+    <div class="col-6 q-pa-md">
+        <p>Create</p>
+        <div>
+            <q-input outlined autogrow v-model="cvData.topText.left.text"
+           
+            class="q-mb-md" label="Left-hand header text (multiple lines allowed)" />
+
+            <q-input outlined autogrow v-model="cvData.topText.right.text"
+          
+            class="q-mb-md" label="Right-hand header text (multiple lines allowed)" />
+
+            <section-view
+                v-on:update:title = "updateTitle"
+                v-on:update:contents = "updateContents"
+                ref="sections"
+                :key="section.id" v-for="section in cvData.sections" :section="section"
+                
+                >
+            </section-view>
+
+
         </div>
-        <div class="col-6 q-pa-md">
-            <p>Preview</p>
-            <div ref="cvparentdiv">
+    </div>
+    <div class="col-6 q-pa-md">
+        <p>Preview</p>
+        <div ref="cvparentdiv">
 
-
-            </div>
+            <print-preview
+                :key="304404309320489943" :cv-data="cvData"
+                >
+            </print-preview>
 
         </div>
 
     </div>
 
+</div>
+
 
 
 <button @click="exportCv" >Export</button>
-
 
 
 </template>
@@ -50,122 +61,82 @@
 
 <script setup>
 
-    let headerLeftText = ref("")
+function updateContents(sectionId, newData) {
+    let cloned = JSON.parse(JSON.stringify(newData))
+    //console.log(13,13, sectionId, newData, cloned)
 
-    let headerRightText = ref("")
+    let foundSection = false
+    for (let xsection of cvData.value.sections) {
+        if (xsection.id === sectionId) foundSection = xsection
+    }
 
-    import { getCurrentInstance, onMounted, ref } from 'vue'
-    let app = getCurrentInstance()
+    if (!foundSection) throw `Fatal error: cannot update contents of section`
 
-    import MaunzerList from 'components/MaunzerList.vue';
+    foundSection.entries = cloned
+}
 
-    import html2pdf from 'html2pdf.js'
+function updateTitle(section, title) {
+    section.title = title
+}
 
-    const cvparentdiv = ref(null)
+let addSection = (function() {
+    let id = 0
+    return (title = "No title", icon = false) => {
+        id ++
+        return {
+            title: title,
+            id: id,
+            entries: [],
+            icon: icon,
+        }
+    }
+})()
 
-    let mounted = false
 
-    let tid = 0
-    let sections = [
-        { title: "Career / Education", id: tid++, },
-        { title: "Awards", id: tid++, },
-        { title: "Skills", id: tid++, },
-        { title: "Languages", id: tid++, },
-    ]
+let cvData = ref({
     
-    let getSubState
+    picture: {
+        image: "",
+    },
 
-    function subListChanged() {
-        changeHappened()
-    }
+    topText: {
+        left: {
+            text: ``,
+        },
+        right: {
+            text: ``,
+        },
+    },
 
-    function headerTextChanged() {
-        changeHappened()
-    }
+    footer: {
+        text: ``,
+    },
 
-    function changeHappened() {
-        if (!getSubState || !mounted) {
-            alert("App is not fully loaded yet. Please wait a moment.")
-            return
-        }
-        let subState = getSubState()
-        for (let item of subState) {
-            let state = item.state
-            let heading = state.heading
-            //console.log(1234, state, state.entries)
-            if (state.entries && state.entries.length) {
-                for (let x of state.entries) {
-                    //console.log(5678, x)
-                    console.log(x.dateOrRange.value, x.jobDescription,
-                        x.model.text, x.model2, x.model3.text, x.model4,
-                    )
-                }
-            }
-        }
+    sections: [
+        addSection("Career / Education"),
+        addSection("Awards"),
+        addSection("Skills"),
+        addSection("Languages"),
+    ],
 
-        console.log(subState, headerLeftText.value, headerRightText.value)
-    }
-
-    function exportCv() {
-
-        if (!getSubState || !mounted) {
-            alert("App is not fully loaded yet. Please wait a moment.")
-            return
-        }
-
-        let el = cvparentdiv.value
-        html2pdf(el)
-
-        return
-
-
-        let subState = getSubState()
-        for (let item of subState) {
-            let state = item.state
-            let heading = state.heading
-            //console.log(1234, state, state.entries)
-            if (state.entries && state.entries.length) {
-                for (let x of state.entries) {
-                    //console.log(5678, x)
-                    console.log(x.dateOrRange.value, x.jobDescription,
-                        x.model.text, x.model2, x.model3.text, x.model4,
-                    )
-                }
-            }
-        }
-        console.log("maunzer lists have state:", subState)
-        
-    }
+})
 
 
 
-    onMounted(() => {
-        //console.log(12345233, app, "app.refs" , getCurrentInstance().refs, "sections:", app.refs.sections)
-        
-        getSubState = () => {
-            let subState = []
-            for (let section of app.refs.sections) {
-                let res = section.getState()
-                subState.push({
-                    state: res,
-                })
-            }
-            return subState
-        }
+import { getCurrentInstance, onMounted, ref } from 'vue'
+let app = getCurrentInstance()
+
+import SectionView from 'components/SectionView.vue';
+
+import PrintPreview from 'components/PrintPreview.vue';
 
 
-        mounted = true
+import html2pdf from 'html2pdf.js'
 
-    })
+const cvparentdiv = ref(null)
 
 
 
-
-//https://stackoverflow.com/questions/68958446/how-to-access-this-keyword-in-script-setup-vue-sfc
-
-
-    
-    //var markdowns = this.$refs.markdowndetails.items wtf how to access this?
 
 
 </script>
