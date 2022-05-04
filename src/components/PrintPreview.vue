@@ -19,6 +19,6 @@ const props = defineProps({
     cvData: Object,
 })
 
-console.log("cv data", props.cvData)
+//console.log("cv data", props.cvData)
 
 </script>

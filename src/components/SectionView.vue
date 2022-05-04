@@ -336,6 +336,36 @@ function addItem() {
 }
 
 
-
-
 </script>
+
+
+<style scoped>
+
+        .maunzer-entry {
+                border: 0px solid red;
+                margin: 10px;
+        }
+
+
+        .select-picker {
+                max-width: 200px;
+        }
+
+        .list-heading {
+            font-size: 1.2rem;
+        }
+
+        .force-white :deep(.q-field__native) {
+            /* hack to force the text color of the select to be white.
+            setting color normally on the q-select does not work, might
+            be a quasar bug. */
+            color: white;
+        }
+
+        .force-white :deep(.q-field__label) {
+            /* same for label of text input */
+            color: rgb(187, 221, 214);
+        }
+
+</style>
+
