@@ -42,6 +42,11 @@
 </q-card>
 
 
+
+
+
+
+
 <draggable 
     v-model="myArray" 
     group="people" 
@@ -56,21 +61,21 @@
 
                 
 
-                <q-badge color="secondary" text-color="white"
+                <p color="secondary" text-color="white"
                     class=""
                     v-if="!element.isBeingEdited && element.dateOrRange.value === 'range'">
                     from {{element.model.text}} {{element.model2}}
                     to {{element.model3.text}} {{element.model4}}:
                     {{element.jobDescription}}
-                </q-badge>
+                </p>
 
 
-                <q-badge color="secondary" text-color="white"
+                <p color="secondary" text-color="white"
                     class=""
                     v-if="!element.isBeingEdited && element.dateOrRange.value === 'date'">
                     {{element.model.text}} {{element.model2}}:
                     {{element.jobDescription}}
-                </q-badge>
+                </p>
 
 
 
@@ -213,8 +218,6 @@
 <script>
 
 
- 
-
         import { defineComponent, ref } from 'vue'
         import draggable from 'vuedraggable'
 
@@ -225,6 +228,8 @@
                 props: {
                     headingText: String,
                 },
+
+                emits: ["change"],
 
 
                 components: {
@@ -241,8 +246,7 @@
                         },
 
                         changeHappened: function() {
-                            console.log("change happened")
-                            //not rly needed if we fetch data from parent :)
+                            this.$emit('change')
                         },
 
                         finishEditingHeading: function() {
